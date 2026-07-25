@@ -1,0 +1,343 @@
+// Ousiana — data model
+// Conventions used throughout:
+//  - Money is Decimal(10,2). USD is the BASE currency: every price is stored in
+//    USD and converted to LBP for display using StoreSettings.lbpRate.
+//  - Orders snapshot everything that can drift (price, cost, fx rate, names) so
+//    historical reporting stays correct when the catalogue changes.
+//  - Bilingual text is stored as flat *En/*Ar columns. At 50-100 products a
+//    translations table would be needless indirection.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ---------------------------------------------------------------------------
+// Auth.js (NextAuth v5) — customers sign in with Google; the owner uses
+// credentials. One table, separated by `role`.
+// ---------------------------------------------------------------------------
+
+enum Role {
+  CUSTOMER
+  ADMIN
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  emailVerified DateTime?
+  image         String?
+  role          Role      @default(CUSTOMER)
+  // Set only for ADMIN accounts (Credentials provider). Null for Google users.
+  passwordHash  String?
+  phone         String?
+
+  accounts      Account[]
+  sessions      Session[]
+  orders        Order[]
+
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@index([userId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+// ---------------------------------------------------------------------------
+// Store settings — a single row the owner edits from admin -> Settings.
+// ---------------------------------------------------------------------------
+
+enum Currency {
+  USD
+  LBP
+}
+
+model StoreSettings {
+  // Always the string "singleton"; enforces exactly one row.
+  id              String   @id @default("singleton")
+  // Which currency customers see first. They can switch; this is the default.
+  defaultCurrency Currency @default(USD)
+  // LBP per 1 USD, maintained by the owner. Wide precision: rates are large.
+  lbpRate         Decimal  @default(89500) @db.Decimal(14, 2)
+  // Flat delivery fee, in USD (the base currency).
+  deliveryFee     Decimal  @default(0) @db.Decimal(10, 2)
+  // Low-stock threshold that drives the admin alert.
+  lowStockAlertAt Int      @default(5)
+  updatedAt       DateTime @updatedAt
+}
+
+// ---------------------------------------------------------------------------
+// Catalogue
+// ---------------------------------------------------------------------------
+
+// Drives per-product theming (card tint, badges, ingredient section).
+enum AccentTheme {
+  PEARL
+  CORAL
+  OCEAN
+  NEUTRAL
+}
+
+// Self-referential tree. The admin UI caps creation at 3 levels
+// (category -> sub -> sub-sub); the schema itself is unbounded.
+model Category {
+  id            String     @id @default(cuid())
+  nameEn        String
+  nameAr        String?
+  slug          String     @unique
+  descriptionEn String?
+  descriptionAr String?
+
+  parentId      String?
+  parent        Category?  @relation("CategoryTree", fields: [parentId], references: [id], onDelete: SetNull)
+  children      Category[] @relation("CategoryTree")
+
+  sortOrder     Int        @default(0)
+  isActive      Boolean    @default(true)
+  products      Product[]
+
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+
+  @@index([parentId])
+  @@index([slug])
+}
+
+model Product {
+  id             String      @id @default(cuid())
+  nameEn         String
+  nameAr         String?
+  slug           String      @unique
+  descriptionEn  String?
+  descriptionAr  String?
+
+  // Regular price in USD.
+  price          Decimal     @db.Decimal(10, 2)
+  // Owner-set discount. When present, this is what the customer pays and the
+  // UI strikes through `price`. Null = not on sale.
+  salePrice      Decimal?    @db.Decimal(10, 2)
+  // What it costs the owner to make. PRIVATE - never exposed to the storefront.
+  // Nullable: profit reporting only counts products where this is filled in.
+  costPrice      Decimal?    @db.Decimal(10, 2)
+
+  scent          String?     // "Rose & vanilla"
+  size           String?     // "125ml"
+  accentTheme    AccentTheme @default(NEUTRAL)
+
+  // Cloudflare R2 public URLs. First entry is the cover image.
+  images         String[]    @default([])
+
+  stock          Int         @default(0)
+  isActive       Boolean     @default(true)
+  isFeatured     Boolean     @default(false)
+
+  categoryId     String
+  category       Category    @relation(fields: [categoryId], references: [id])
+
+  ingredients    Ingredient[]
+  orderItems     OrderItem[]
+
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+
+  @@index([categoryId])
+  @@index([isActive])
+  @@index([slug])
+}
+
+// Powers the "Infused with Nature's Goodness" section, per product.
+model Ingredient {
+  id        String  @id @default(cuid())
+  productId String
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  nameEn    String  // "Jojoba oil"
+  nameAr    String?
+  benefitEn String  // "Balances and softens skin"
+  benefitAr String?
+  // Icon key resolved to a component on the frontend, e.g. "leaf" | "droplet".
+  icon      String?
+  sortOrder Int     @default(0)
+
+  @@index([productId])
+}
+
+// ---------------------------------------------------------------------------
+// Discounts — coupon codes applied to the order total. (Per-product discounts
+// live on Product.salePrice; the two are tracked separately so the admin can
+// report on each.)
+// ---------------------------------------------------------------------------
+
+enum CouponType {
+  PERCENTAGE // value = 10 means 10% off
+  FIXED      // value = 5  means $5 off
+}
+
+model Coupon {
+  id             String     @id @default(cuid())
+  code           String     @unique
+  type           CouponType
+  value          Decimal    @db.Decimal(10, 2)
+  // Minimum order subtotal (USD) required for the code to apply.
+  minSubtotal    Decimal?   @db.Decimal(10, 2)
+  maxRedemptions Int?
+  timesRedeemed  Int        @default(0)
+  startsAt       DateTime?
+  endsAt         DateTime?
+  isActive       Boolean    @default(true)
+
+  orders         Order[]
+
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
+
+  @@index([code])
+}
+
+// ---------------------------------------------------------------------------
+// Orders
+// ---------------------------------------------------------------------------
+
+enum PaymentMethod {
+  CASH_ON_DELIVERY
+  WHISH
+}
+
+enum PaymentStatus {
+  UNPAID                // COD: cash not yet collected
+  AWAITING_CONFIRMATION // Whish: customer says they transferred; owner must verify
+  PAID
+  REFUNDED
+}
+
+enum OrderStatus {
+  PENDING
+  CONFIRMED
+  PREPARING
+  SHIPPED
+  DELIVERED
+  CANCELLED
+}
+
+model Order {
+  id             String        @id @default(cuid())
+  // Human-friendly reference, e.g. "OUS-2608-0007".
+  orderNumber    String        @unique
+
+  // Null for guest checkout. Guests are the primary flow; accounts are optional.
+  userId         String?
+  user           User?         @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  // Contact + delivery, captured at checkout regardless of sign-in state.
+  firstName      String
+  lastName       String
+  email          String
+  phone          String
+  addressLine    String
+  city           String
+  area           String?
+  notes          String?
+
+  // What the customer was actually shown/charged, snapshotted. Without these
+  // two, updating lbpRate would silently rewrite historical revenue.
+  currency       Currency      @default(USD)
+  fxRate         Decimal       @default(1) @db.Decimal(14, 2)
+
+  paymentMethod  PaymentMethod
+  paymentStatus  PaymentStatus @default(UNPAID)
+  // Reference the customer types in after a manual Whish transfer. A claim,
+  // not proof - the owner verifies against the Whish app before shipping.
+  whishReference String?
+
+  status         OrderStatus   @default(PENDING)
+
+  // Third-party courier details, entered by the owner when handing over.
+  courierName    String?
+  trackingNumber String?
+
+  couponId       String?
+  coupon         Coupon?       @relation(fields: [couponId], references: [id], onDelete: SetNull)
+  couponCode     String?       // snapshot, survives coupon deletion
+
+  // Money, all in USD base. subtotal is AFTER per-product sale prices but
+  // BEFORE coupon; discountTotal is the coupon's contribution only.
+  subtotal       Decimal       @db.Decimal(10, 2)
+  discountTotal  Decimal       @default(0) @db.Decimal(10, 2)
+  deliveryFee    Decimal       @default(0) @db.Decimal(10, 2)
+  total          Decimal       @db.Decimal(10, 2)
+
+  items          OrderItem[]
+
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+
+  @@index([status])
+  @@index([paymentStatus])
+  @@index([createdAt])
+  @@index([userId])
+  @@index([email]) // repeat-customer lookups include guests
+}
+
+model OrderItem {
+  id            String   @id @default(cuid())
+  orderId       String
+  order         Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  // Nullable so deleting a product never destroys order history.
+  productId     String?
+  product       Product? @relation(fields: [productId], references: [id], onDelete: SetNull)
+
+  productName   String   // snapshot (English name at time of order)
+  // Regular price at time of order. Together with unitPrice this is what makes
+  // "how much did we give away in product discounts" answerable.
+  unitListPrice Decimal  @db.Decimal(10, 2)
+  // Actually charged per unit (= salePrice ?? price at time of order).
+  unitPrice     Decimal  @db.Decimal(10, 2)
+  // Cost snapshot for profit. Null if the owner hadn't set a cost price.
+  unitCost      Decimal? @db.Decimal(10, 2)
+
+  quantity      Int
+  lineTotal     Decimal  @db.Decimal(10, 2) // unitPrice * quantity
+
+  @@index([orderId])
+  @@index([productId])
+}

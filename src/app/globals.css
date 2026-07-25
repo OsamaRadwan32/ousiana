@@ -1,0 +1,208 @@
+@import "tailwindcss";
+
+/* ==========================================================================
+   OUSIANA — DESIGN TOKENS
+   --------------------------------------------------------------------------
+   Two files control the entire look: this one (colour, type, shape) and
+   src/config/site.ts (name, contact, currency, payments).
+
+   SURFACES come from the client's palette PDF, verbatim. Do not invent new
+   background shades — pick from these five.
+
+   INK + ACCENTS are derived, because the PDF supplies no text or accent
+   colour. Ink is the charcoal of the Ousiana logo. The three accents are
+   sampled from the product labels: Pearl gold, Coral pink, Ocean blue.
+   ========================================================================== */
+
+:root {
+  /* --- Surfaces (from the palette PDF) ---------------------------------- */
+  --sand-50:  #FCF9F5;  /* page background          */
+  --sand-100: #F8F4EF;  /* cards, raised surfaces   */
+  --sand-200: #F6F1EA;  /* alternating sections     */
+  --blush-100:#F8ECEB;  /* tinted panels, hero      */
+  --blush-200:#F4E4E2;  /* borders, hover, dividers */
+
+  /* --- Ink (derived from the logo) -------------------------------------- */
+  --ink:       #3F3F3F;  /* primary text, buttons   */
+  --ink-soft:  #5C5854;  /* secondary headings      */
+  --ink-muted: #8A817C;  /* captions, meta          */
+
+  /* --- Scent accents (sampled from the labels) -------------------------- */
+  --pearl: #C98A28;      /* darkened from label gold for text contrast */
+  --pearl-tint: #FAF2E4;
+  --coral: #C9527C;      /* darkened from label pink for text contrast */
+  --coral-tint: #FBEBF1;
+  --ocean: #4A87BE;      /* darkened from label blue for text contrast */
+  --ocean-tint: #EAF2F9;
+
+  /* --- Status (UI only, never brand) ------------------------------------ */
+  --success: #4F7A52;
+  --warning: #B8862B;
+  --danger:  #B4452F;
+
+  /* --- Shape ------------------------------------------------------------ */
+  --radius-card: 14px;
+  --radius-pill: 999px;
+
+  /* --- Active accent -----------------------------------------------------
+     Defaults to ink. A .theme-* wrapper swaps these, so any component using
+     var(--accent) themes itself by context instead of taking a colour prop. */
+  --accent: var(--ink);
+  --accent-tint: var(--sand-200);
+}
+
+/* --------------------------------------------------------------------------
+   Scent themes. Wrap any subtree to retint it:
+     <section class="theme-coral"> ... </section>
+   -------------------------------------------------------------------------- */
+.theme-pearl { --accent: var(--pearl); --accent-tint: var(--pearl-tint); }
+.theme-coral { --accent: var(--coral); --accent-tint: var(--coral-tint); }
+.theme-ocean { --accent: var(--ocean); --accent-tint: var(--ocean-tint); }
+.theme-neutral { --accent: var(--ink); --accent-tint: var(--sand-200); }
+
+@theme inline {
+  --color-sand-50:   var(--sand-50);
+  --color-sand-100:  var(--sand-100);
+  --color-sand-200:  var(--sand-200);
+  --color-blush-100: var(--blush-100);
+  --color-blush-200: var(--blush-200);
+
+  --color-ink:       var(--ink);
+  --color-ink-soft:  var(--ink-soft);
+  --color-ink-muted: var(--ink-muted);
+
+  --color-pearl:      var(--pearl);
+  --color-pearl-tint: var(--pearl-tint);
+  --color-coral:      var(--coral);
+  --color-coral-tint: var(--coral-tint);
+  --color-ocean:      var(--ocean);
+  --color-ocean-tint: var(--ocean-tint);
+
+  --color-accent:      var(--accent);
+  --color-accent-tint: var(--accent-tint);
+
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-danger:  var(--danger);
+
+  /* Type roles. The Arabic face is swapped in by [dir="rtl"] below.
+     - display: Jost, geometric — echoes the logo ring and the "BLOOM" lockup
+     - script:  Sacramento — scent names ONLY, mirroring the bottle labels
+     - body:    Karla — humanist, quiet, readable at long lengths */
+  --font-display: var(--font-jost);
+  --font-script:  var(--font-sacramento);
+  --font-sans:    var(--font-karla);
+
+  --radius-card: 14px;
+}
+
+/* --------------------------------------------------------------------------
+   Base
+   -------------------------------------------------------------------------- */
+
+body {
+  background: var(--sand-50);
+  color: var(--ink);
+  font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Headings borrow the logo's voice: geometric, light, wide-tracked. */
+h1, h2, h3, h4 {
+  font-family: var(--font-display), ui-sans-serif, sans-serif;
+  font-weight: 400;
+  color: var(--ink);
+  letter-spacing: 0.01em;
+}
+
+/* The label lockup: a script scent name sitting above geometric caps.
+   Used sparingly — scent names only. */
+.scent-script {
+  font-family: var(--font-script), cursive;
+  font-weight: 400;
+  line-height: 0.9;
+}
+
+.lockup-caps {
+  font-family: var(--font-display), sans-serif;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+/* The logo ring's letterspaced caps — eyebrows, trust bars, small labels. */
+.eyebrow {
+  font-family: var(--font-display), sans-serif;
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+}
+
+/* --------------------------------------------------------------------------
+   Arabic / RTL
+   --------------------------------------------------------------------------
+   Everything else in the app must use LOGICAL properties (ms-/me-/ps-/pe-/
+   start-/end-/text-start/text-end) rather than left/right, so direction flips
+   for free. These rules only handle what logical properties can't: the font
+   swap and the few glyph-level details.
+   -------------------------------------------------------------------------- */
+
+[dir="rtl"] {
+  --font-display: var(--font-tajawal);
+  --font-sans: var(--font-tajawal);
+}
+
+/* Sacramento has no Arabic glyphs. In RTL the script scent name falls back to
+   the Arabic face — losing the flourish but staying legible, which is the
+   right trade. */
+[dir="rtl"] .scent-script {
+  font-family: var(--font-tajawal), sans-serif;
+  font-weight: 500;
+  line-height: 1.3;
+}
+
+/* Arabic doesn't uppercase and letterspacing breaks its joined forms. */
+[dir="rtl"] .eyebrow,
+[dir="rtl"] .lockup-caps {
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+/* Arabic renders small; nudge the body up slightly for parity with Latin. */
+[dir="rtl"] body {
+  font-size: 1.05rem;
+  line-height: 1.85;
+}
+
+/* Mirror any element that encodes direction (chevrons, arrows). Opt in with
+   class="rtl-flip" — never apply it to logos, product photos, or numbers. */
+[dir="rtl"] .rtl-flip {
+  transform: scaleX(-1);
+}
+
+/* --------------------------------------------------------------------------
+   Quality floor
+   -------------------------------------------------------------------------- */
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+::selection {
+  background: var(--blush-200);
+  color: var(--ink);
+}

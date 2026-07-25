@@ -1,0 +1,91 @@
+{
+  "_note": "PLACEHOLDER TRANSLATIONS — machine-drafted, pending client review. Every string here must be checked by a native speaker before launch. See Request for Access, Part 4.",
+  "nav": {
+    "home": "الرئيسية",
+    "shop": "المتجر",
+    "about": "من نحن",
+    "ingredients": "المكونات",
+    "contact": "تواصل معنا",
+    "cart": "السلة",
+    "account": "حسابي",
+    "search": "بحث"
+  },
+  "home": {
+    "heroTitle": "عبير من الطبيعة",
+    "heroMotto": "غذّي. تألّقي. ازدهري.",
+    "heroBody": "زيوت طبيعية للجسم مصنوعة بعناية لترطيب بشرتك وإنعاش حواسك.",
+    "heroCta": "تسوّقي عطورنا",
+    "signatureTitle": "عطورنا المميزة",
+    "signatureSubtitle": "من وحي الطبيعة. صُنعت لك.",
+    "shopNow": "تسوّقي الآن"
+  },
+  "trust": {
+    "deliveryTitle": "توصيل سريع",
+    "deliveryBody": "إلى كل لبنان",
+    "paymentTitle": "دفع سهل",
+    "paymentBody": "الدفع عند الاستلام أو عبر Whish",
+    "satisfactionTitle": "رضا تام",
+    "satisfactionBody": "نهتم بك"
+  },
+  "product": {
+    "addToCart": "أضيفي إلى السلة",
+    "added": "تمت الإضافة",
+    "orderOnWhatsapp": "اطلبي عبر واتساب",
+    "inStock": "متوفر",
+    "outOfStock": "غير متوفر",
+    "lowStock": "الكمية محدودة",
+    "onSale": "عرض خاص",
+    "bestSeller": "الأكثر مبيعاً",
+    "ingredientsTitle": "غنيّ بخيرات الطبيعة",
+    "ingredientsFooter": "مكونات نقية. نتائج ملحوظة."
+  },
+  "cart": {
+    "title": "سلتك",
+    "empty": "سلتك فارغة",
+    "emptyBody": "اكتشفي زيوتنا الطبيعية المصنوعة يدوياً.",
+    "subtotal": "المجموع الفرعي",
+    "delivery": "التوصيل",
+    "discount": "الخصم",
+    "total": "الإجمالي",
+    "checkout": "إتمام الطلب",
+    "remove": "إزالة",
+    "quantity": "الكمية"
+  },
+  "checkout": {
+    "title": "إتمام الطلب",
+    "contactSection": "معلوماتك",
+    "deliverySection": "التوصيل",
+    "paymentSection": "الدفع",
+    "firstName": "الاسم الأول",
+    "lastName": "اسم العائلة",
+    "email": "البريد الإلكتروني",
+    "phone": "رقم الهاتف",
+    "address": "العنوان",
+    "city": "المدينة",
+    "area": "المنطقة",
+    "notes": "ملاحظات التوصيل",
+    "optional": "اختياري",
+    "couponCode": "رمز الخصم",
+    "applyCoupon": "تطبيق",
+    "cod": "الدفع عند الاستلام",
+    "codBody": "ادفعي عند وصول طلبك",
+    "whish": "تحويل عبر Whish",
+    "whishBody": "حوّلي المبلغ ثم أدخلي رقم العملية",
+    "whishReference": "رقم عملية Whish",
+    "placeOrder": "تأكيد الطلب",
+    "placingOrder": "جارٍ تأكيد الطلب…"
+  },
+  "order": {
+    "thanksTitle": "شكراً لك!",
+    "received": "تم استلام طلبك.",
+    "codNote": "ستدفعين عند الاستلام.",
+    "whishNote": "سنؤكد الطلب فور وصول التحويل.",
+    "continueShopping": "متابعة التسوق"
+  },
+  "common": {
+    "currency": "العملة",
+    "language": "اللغة",
+    "viewAll": "عرض الكل",
+    "backToHome": "العودة إلى الرئيسية"
+  }
+}

@@ -1,0 +1,90 @@
+{
+  "nav": {
+    "home": "Home",
+    "shop": "Shop",
+    "about": "About Us",
+    "ingredients": "Ingredients",
+    "contact": "Contact",
+    "cart": "Cart",
+    "account": "Account",
+    "search": "Search"
+  },
+  "home": {
+    "heroTitle": "Scents from Nature",
+    "heroMotto": "Nourish. Glow. Bloom.",
+    "heroBody": "Natural body oils crafted with care to hydrate your skin and uplift your senses.",
+    "heroCta": "Shop our scents",
+    "signatureTitle": "Our Signature Scents",
+    "signatureSubtitle": "Inspired by nature. Made for you.",
+    "shopNow": "Shop now"
+  },
+  "trust": {
+    "deliveryTitle": "Fast delivery",
+    "deliveryBody": "Across Lebanon",
+    "paymentTitle": "Simple payment",
+    "paymentBody": "Cash on delivery or Whish",
+    "satisfactionTitle": "100% satisfaction",
+    "satisfactionBody": "We care about you"
+  },
+  "product": {
+    "addToCart": "Add to cart",
+    "added": "Added",
+    "orderOnWhatsapp": "Order on WhatsApp",
+    "inStock": "In stock",
+    "outOfStock": "Out of stock",
+    "lowStock": "Only a few left",
+    "onSale": "On sale",
+    "bestSeller": "Best seller",
+    "ingredientsTitle": "Infused with Nature's Goodness",
+    "ingredientsFooter": "Pure ingredients. Visible results."
+  },
+  "cart": {
+    "title": "Your cart",
+    "empty": "Your cart is empty",
+    "emptyBody": "Discover our handcrafted body oils.",
+    "subtotal": "Subtotal",
+    "delivery": "Delivery",
+    "discount": "Discount",
+    "total": "Total",
+    "checkout": "Checkout",
+    "remove": "Remove",
+    "quantity": "Quantity"
+  },
+  "checkout": {
+    "title": "Checkout",
+    "contactSection": "Your details",
+    "deliverySection": "Delivery",
+    "paymentSection": "Payment",
+    "firstName": "First name",
+    "lastName": "Last name",
+    "email": "Email",
+    "phone": "Phone number",
+    "address": "Address",
+    "city": "City",
+    "area": "Area",
+    "notes": "Delivery notes",
+    "optional": "optional",
+    "couponCode": "Discount code",
+    "applyCoupon": "Apply",
+    "cod": "Cash on delivery",
+    "codBody": "Pay when your order arrives",
+    "whish": "Whish transfer",
+    "whishBody": "Transfer the total, then enter your reference number",
+    "whishReference": "Whish reference number",
+    "placeOrder": "Place order",
+    "placingOrder": "Placing order…"
+  },
+  "order": {
+    "thanksTitle": "Thank you!",
+    "received": "Your order has been received.",
+    "codNote": "You'll pay cash on delivery.",
+    "whishNote": "We'll confirm once your Whish transfer arrives.",
+    "continueShopping": "Continue shopping"
+  },
+  "common": {
+    "currency": "Currency",
+    "language": "Language",
+    "viewAll": "View all",
+    "backToHome": "Back to home"
+  }
+}
