@@ -81,6 +81,7 @@ async function main() {
   const products = [
     {
       slug: "pearl-bloom",
+      images: ["/products/pearl-bloom.png"],
       nameEn: "Pearl Bloom Body Oil",
       nameAr: "زيت الجسم بيرل بلوم",
       descriptionEn:
@@ -103,6 +104,7 @@ async function main() {
     },
     {
       slug: "coral-bloom",
+      images: ["/products/coral-bloom.png"],
       nameEn: "Coral Bloom Body Oil",
       nameAr: "زيت الجسم كورال بلوم",
       descriptionEn:
@@ -123,6 +125,7 @@ async function main() {
     },
     {
       slug: "ocean-bloom",
+      images: ["/products/ocean-bloom.png"],
       nameEn: "Ocean Bloom Body Oil",
       nameAr: "زيت الجسم أوشن بلوم",
       descriptionEn:
@@ -152,7 +155,7 @@ async function main() {
       create: {
         ...data,
         size: "125ml",
-        images: [], // TODO: R2 URLs once photography is uploaded (Phase 4)
+        images: data.images ?? [], // committed cutouts now; R2 URLs in Phase 4
         costPrice: null, // TODO: client to supply — profit stays empty until then
         categoryId: blooms.id,
         isActive: true,
