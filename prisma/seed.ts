@@ -45,7 +45,12 @@ async function main() {
   const bodyCare = await prisma.category.upsert({
     where: { slug: "body-care" },
     update: {},
-    create: { nameEn: "Body Care", nameAr: "العناية بالجسم", slug: "body-care", sortOrder: 1 },
+    create: {
+      nameEn: "Body Care",
+      nameAr: "العناية بالجسم",
+      slug: "body-care",
+      sortOrder: 1,
+    },
   });
 
   const bodyOils = await prisma.category.upsert({
@@ -56,7 +61,8 @@ async function main() {
       nameAr: "زيوت الجسم",
       slug: "body-oils",
       parentId: bodyCare.id,
-      descriptionEn: "Natural oils crafted to hydrate your skin and uplift your senses.",
+      descriptionEn:
+        "Natural oils crafted to hydrate your skin and uplift your senses.",
       descriptionAr: "زيوت طبيعية مصنوعة لترطيب بشرتك وإنعاش حواسك.",
       sortOrder: 1,
     },
@@ -81,7 +87,7 @@ async function main() {
   const products = [
     {
       slug: "pearl-bloom",
-      images: ["/products/pearl-bloom.png"],
+      images: ["/products/product-pearl-bloom-nobg.png"],
       nameEn: "Pearl Bloom Body Oil",
       nameAr: "زيت الجسم بيرل بلوم",
       descriptionEn:
@@ -94,17 +100,53 @@ async function main() {
       stock: 20,
       isFeatured: true,
       ingredients: [
-        { nameEn: "Rose essential oil", nameAr: "زيت الورد العطري", benefitEn: "Soothes and refreshes the skin with a delicate touch.", benefitAr: "يهدئ وينعش البشرة بلمسة رقيقة.", icon: "flower" },
-        { nameEn: "Vanilla essential oil", nameAr: "زيت الفانيليا العطري", benefitEn: "Calms the senses and leaves skin beautifully scented.", benefitAr: "يهدئ الحواس ويترك البشرة بعبير جميل.", icon: "flower-2" },
-        { nameEn: "Coconut oil", nameAr: "زيت جوز الهند", benefitEn: "Deeply hydrates and nourishes the skin.", benefitAr: "يرطب ويغذي البشرة بعمق.", icon: "nut" },
-        { nameEn: "Jojoba oil", nameAr: "زيت الجوجوبا", benefitEn: "Balances and softens for a smooth feel.", benefitAr: "يوازن وينعم البشرة لملمس حريري.", icon: "leaf" },
-        { nameEn: "Sweet almond oil", nameAr: "زيت اللوز الحلو", benefitEn: "Improves texture and enhances natural radiance.", benefitAr: "يحسّن الملمس ويعزز الإشراق الطبيعي.", icon: "leaf" },
-        { nameEn: "Vitamin E", nameAr: "فيتامين E", benefitEn: "Protects and supports healthy, glowing skin.", benefitAr: "يحمي ويدعم بشرة صحية ومشرقة.", icon: "droplet" },
+        {
+          nameEn: "Rose essential oil",
+          nameAr: "زيت الورد العطري",
+          benefitEn: "Soothes and refreshes the skin with a delicate touch.",
+          benefitAr: "يهدئ وينعش البشرة بلمسة رقيقة.",
+          icon: "flower",
+        },
+        {
+          nameEn: "Vanilla essential oil",
+          nameAr: "زيت الفانيليا العطري",
+          benefitEn: "Calms the senses and leaves skin beautifully scented.",
+          benefitAr: "يهدئ الحواس ويترك البشرة بعبير جميل.",
+          icon: "flower-2",
+        },
+        {
+          nameEn: "Coconut oil",
+          nameAr: "زيت جوز الهند",
+          benefitEn: "Deeply hydrates and nourishes the skin.",
+          benefitAr: "يرطب ويغذي البشرة بعمق.",
+          icon: "nut",
+        },
+        {
+          nameEn: "Jojoba oil",
+          nameAr: "زيت الجوجوبا",
+          benefitEn: "Balances and softens for a smooth feel.",
+          benefitAr: "يوازن وينعم البشرة لملمس حريري.",
+          icon: "leaf",
+        },
+        {
+          nameEn: "Sweet almond oil",
+          nameAr: "زيت اللوز الحلو",
+          benefitEn: "Improves texture and enhances natural radiance.",
+          benefitAr: "يحسّن الملمس ويعزز الإشراق الطبيعي.",
+          icon: "leaf",
+        },
+        {
+          nameEn: "Vitamin E",
+          nameAr: "فيتامين E",
+          benefitEn: "Protects and supports healthy, glowing skin.",
+          benefitAr: "يحمي ويدعم بشرة صحية ومشرقة.",
+          icon: "droplet",
+        },
       ],
     },
     {
       slug: "coral-bloom",
-      images: ["/products/coral-bloom.png"],
+      images: ["/products/product-coral-bloom-nobg.png"],
       nameEn: "Coral Bloom Body Oil",
       nameAr: "زيت الجسم كورال بلوم",
       descriptionEn:
@@ -117,15 +159,39 @@ async function main() {
       stock: 20,
       isFeatured: true,
       ingredients: [
-        { nameEn: "Jojoba oil", nameAr: "زيت الجوجوبا", benefitEn: "Balances and softens skin.", benefitAr: "يوازن وينعم البشرة.", icon: "leaf" },
-        { nameEn: "Coconut oil", nameAr: "زيت جوز الهند", benefitEn: "Deeply hydrates and nourishes.", benefitAr: "يرطب ويغذي بعمق.", icon: "nut" },
-        { nameEn: "Sweet almond oil", nameAr: "زيت اللوز الحلو", benefitEn: "Improves texture and tone.", benefitAr: "يحسّن ملمس البشرة ولونها.", icon: "leaf" },
-        { nameEn: "Vitamin E", nameAr: "فيتامين E", benefitEn: "Protects and supports healthy skin.", benefitAr: "يحمي ويدعم بشرة صحية.", icon: "droplet" },
+        {
+          nameEn: "Jojoba oil",
+          nameAr: "زيت الجوجوبا",
+          benefitEn: "Balances and softens skin.",
+          benefitAr: "يوازن وينعم البشرة.",
+          icon: "leaf",
+        },
+        {
+          nameEn: "Coconut oil",
+          nameAr: "زيت جوز الهند",
+          benefitEn: "Deeply hydrates and nourishes.",
+          benefitAr: "يرطب ويغذي بعمق.",
+          icon: "nut",
+        },
+        {
+          nameEn: "Sweet almond oil",
+          nameAr: "زيت اللوز الحلو",
+          benefitEn: "Improves texture and tone.",
+          benefitAr: "يحسّن ملمس البشرة ولونها.",
+          icon: "leaf",
+        },
+        {
+          nameEn: "Vitamin E",
+          nameAr: "فيتامين E",
+          benefitEn: "Protects and supports healthy skin.",
+          benefitAr: "يحمي ويدعم بشرة صحية.",
+          icon: "droplet",
+        },
       ],
     },
     {
       slug: "ocean-bloom",
-      images: ["/products/ocean-bloom.png"],
+      images: ["/products/product-ocean-bloom-nobg.png"],
       nameEn: "Ocean Bloom Body Oil",
       nameAr: "زيت الجسم أوشن بلوم",
       descriptionEn:
@@ -138,11 +204,41 @@ async function main() {
       stock: 20,
       isFeatured: true,
       ingredients: [
-        { nameEn: "Blueberry oil", nameAr: "زيت التوت الأزرق", benefitEn: "Rich in antioxidants to protect and revitalize skin.", benefitAr: "غني بمضادات الأكسدة لحماية البشرة وتنشيطها.", icon: "cherry" },
-        { nameEn: "Coconut oil", nameAr: "زيت جوز الهند", benefitEn: "Deeply hydrates and nourishes the skin.", benefitAr: "يرطب ويغذي البشرة بعمق.", icon: "nut" },
-        { nameEn: "Jojoba oil", nameAr: "زيت الجوجوبا", benefitEn: "Balances and softens for a smooth feel.", benefitAr: "يوازن وينعم البشرة لملمس حريري.", icon: "leaf" },
-        { nameEn: "Sweet almond oil", nameAr: "زيت اللوز الحلو", benefitEn: "Improves texture and enhances natural radiance.", benefitAr: "يحسّن الملمس ويعزز الإشراق الطبيعي.", icon: "leaf" },
-        { nameEn: "Vitamin E", nameAr: "فيتامين E", benefitEn: "Protects and supports healthy, glowing skin.", benefitAr: "يحمي ويدعم بشرة صحية ومشرقة.", icon: "droplet" },
+        {
+          nameEn: "Blueberry oil",
+          nameAr: "زيت التوت الأزرق",
+          benefitEn: "Rich in antioxidants to protect and revitalize skin.",
+          benefitAr: "غني بمضادات الأكسدة لحماية البشرة وتنشيطها.",
+          icon: "cherry",
+        },
+        {
+          nameEn: "Coconut oil",
+          nameAr: "زيت جوز الهند",
+          benefitEn: "Deeply hydrates and nourishes the skin.",
+          benefitAr: "يرطب ويغذي البشرة بعمق.",
+          icon: "nut",
+        },
+        {
+          nameEn: "Jojoba oil",
+          nameAr: "زيت الجوجوبا",
+          benefitEn: "Balances and softens for a smooth feel.",
+          benefitAr: "يوازن وينعم البشرة لملمس حريري.",
+          icon: "leaf",
+        },
+        {
+          nameEn: "Sweet almond oil",
+          nameAr: "زيت اللوز الحلو",
+          benefitEn: "Improves texture and enhances natural radiance.",
+          benefitAr: "يحسّن الملمس ويعزز الإشراق الطبيعي.",
+          icon: "leaf",
+        },
+        {
+          nameEn: "Vitamin E",
+          nameAr: "فيتامين E",
+          benefitEn: "Protects and supports healthy, glowing skin.",
+          benefitAr: "يحمي ويدعم بشرة صحية ومشرقة.",
+          icon: "droplet",
+        },
       ],
     },
   ];
@@ -165,10 +261,16 @@ async function main() {
     // Replace rather than merge, so re-seeding stays idempotent.
     await prisma.ingredient.deleteMany({ where: { productId: product.id } });
     await prisma.ingredient.createMany({
-      data: ingredients.map((ing, i) => ({ ...ing, productId: product.id, sortOrder: i })),
+      data: ingredients.map((ing, i) => ({
+        ...ing,
+        productId: product.id,
+        sortOrder: i,
+      })),
     });
   }
-  console.log(`✓ Seeded ${products.length} products under Body Care → Body Oils → Signature Blooms`);
+  console.log(
+    `✓ Seeded ${products.length} products under Body Care → Body Oils → Signature Blooms`,
+  );
 
   // --- A sample coupon ---------------------------------------------------
   await prisma.coupon.upsert({
